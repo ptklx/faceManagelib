@@ -87,7 +87,7 @@ class PictureWindow(Canvas):
         if self.nNum < stepN:
             self.nNum=0
             return 0	
-        self.nNum -=stepN
+        self.nNum -=stepN##########################skip
         self.img ,self.copyimg, self.flag = self.tface.detectFeature(self.nNum,exlight)
         if self.methdNum ==4:
             if self.img is None or self.flag == 0:
@@ -99,7 +99,7 @@ class PictureWindow(Canvas):
                 self.show_image(self.img)
         return 1
 
-    def skip_pic(self,stepN):
+    def skip_pic(self,stepN,exlight):
         if(self.tface==None):
             return
         #self.tface.saveTxt()
@@ -110,7 +110,7 @@ class PictureWindow(Canvas):
             self.nNum=0
             return 0	
         self.nNum -=stepN
-        self.img ,self.copyimg, self.flag = self.tface.detectFeature(self.nNum)
+        self.img ,self.copyimg, self.flag = self.tface.detectFeature(self.nNum,exlight)
         if self.img is not None:
             self.show_image(self.img)
         #self.tface.notSave()

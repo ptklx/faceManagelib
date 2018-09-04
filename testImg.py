@@ -19,9 +19,15 @@ class testShowImg():
         self.width = width
         self.height = height
         self.lastpath =''
-    def searchFile(self):
+    def searchFile(self,num):
         files = os.listdir(self.path)
+        files = sorted(files)
+        flagc = 1
         for fi in files:
+            if(fi.find(num)) != -1:
+                flagc=0
+            if flagc:
+                continue
             fi_d = os.path.join(self.path,fi)
             #if os.path.exists(fi_d):
             #dirflag = os.path.isdir(fi_d)
@@ -38,10 +44,10 @@ class testShowImg():
         cv2.destroyAllWindows()
 
     def getOnePersonbb(self,inpath):
-        f=open(inpath,'r+')
+        f=open(inpath,'r')
         #dirpaht = os.path.dirname(inpaht)
         [dirname,filename] = os.path.split(inpath)
-        dirname = 'V:\\NIR_ALL_480x572labeltxt' # dirname +'\\test'
+        dirname =  dirname +'\\test'  #'V:\\NIR_ALL_480x572labeltxt' #
         if not os.path.exists(dirname):                   #判断是否存在文件夹如果不存在则创建为文件夹  
             os.makedirs(dirname) 
         f1 = open(dirname+'\\'+filename,'w')  
@@ -114,8 +120,13 @@ class testShowImg():
 
         return img
     def showimg(self,inpathlist):
-        inpathlist= 'V'+ inpathlist[1:]
-        img = cv2.imread(inpathlist,cv2.IMREAD_COLOR) #cv2.IMREAD_GRAYSCALE
+        #inpathlist= 'V'+ inpathlist[1:]
+        inpathlist = self.path[0:1]+inpathlist[1:]
+        if os.path.splitext(inpathlist)[1] =='.bin':  #temp 2018 08 02
+                img = xyshow(inpathlist,480,640)
+        else:
+            img = cv2.imread(inpathlist,cv2.IMREAD_COLOR) #cv2.IMREAD_GRAYSCALE
+        
         if img is None: 
             return 0
         img = cv2.resize(img, (self.width, self.height), interpolation=cv2.INTER_LINEAR) 
@@ -124,7 +135,19 @@ class testShowImg():
             return 0
         cv2.imshow("personOneFace",img)
         #cv2.waitKey(0)
-    
+def xyshow(filename, nx, nz):
+    data = np.fromfile(filename,np.uint8)
+    img = data.reshape(nz,nx)
+    '''
+    f = open(path, "rb")
+    pic=np.zeros((nz,nx),np.uint8)
+    for i in range(nz):
+        for j in range(nx):
+            data1 = f.read(1)
+            pic[i][j]=ord(data1)
+    f.close()
+    '''
+    return img
 
 
 if __name__ == "__main__":

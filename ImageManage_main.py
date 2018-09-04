@@ -50,9 +50,9 @@ _bgcolorlight = '#ffffff'
 _fgcolorlight = '#000000'
 _lightwindowbackground = '#f2f2f2'
 
-faceImagePath = 'V:\\pt_data\\test'#"C:/Users/Public/Pictures/Sample Pictures"  'V:\\NIR_ALL'# #"V:/NIR_7440/ALL2" #
-outTxtPath = 'H:\\facedetection\\python\\faceImageManage\\pic'  #'V:/NIR_ALL_480x572labeltxt/sevenDot'
-selectMethod = 4
+faceImagePath = 'H:\\facedetection\\faceData\\originaldata\\dg'#"C:/Users/Public/Pictures/Sample Pictures"  'V:\\NIR_ALL'# #"V:/NIR_7440/ALL2" #
+outTxtPath = 'V:\\NIR_ALLlabeltxt\\fivedotnew'#H:\\facedetection\\python\\faceImageManage\\pic'  #'V:/NIR_ALL_480x572labeltxt/sevenDot'
+selectMethod = 1
 nwidth = 480
 nheight = 572
 
@@ -61,7 +61,7 @@ class New_Toplevel_1:
         """This class configures and populates the toplevel window.
            top is the toplevel containing window."""
         top.geometry("640x660+408+185")#("555x398+408+185")  x  y 
-        top.title("FaceImageManage 572x480")
+        top.title("FaceImageManage")
         self.showImagef= None
         self.file_path = faceImagePath
         root.configure(background=_lightwindowbackground)
@@ -173,7 +173,7 @@ class New_Toplevel_1:
         self.bt_fix.configure(fg=_fgcolorlight)
 
         self.bt_test = Button(top)
-        self.bt_test.place(relx=0.88, rely=0.14, height=30, width=50)
+        self.bt_test.place(relx=0.88, rely=0.16, height=30, width=50)
         self.bt_test.configure(activebackground=_activebgcolordark)
         self.bt_test.configure(command=lambda: self.testshowpic())
         #self.bt_fix.configure(background=_bgcolorlight)
@@ -181,6 +181,24 @@ class New_Toplevel_1:
         self.bt_test.configure(text='test')
         self.bt_test.configure(background=_bgcolorlight)
         self.bt_test.configure(fg=_fgcolorlight)
+
+        self.txtnumV = 0
+        self.Label6 = Label(top)
+        self.Label6.place(relx=0.76, rely=0.1, height=20, width=50)
+        self.Label6.configure(text='txtnum:')
+        self.Label6.configure(fg=_fgcolorlight)
+        self.Label6.configure(background=_lightwindowbackground)
+
+        self.txtnum = Entry(top)
+        self.txtnum.place(relx=0.85, rely=0.1, height=20, width=50)
+        self.txtnum.configure(background=_bgcolorlight)
+        self.txtnum.configure(font="TkFixedFont")
+       # self.txtnum.configure(width=100)
+        self.txtnum.insert(0, self.txtnumV)
+        self.txtnum.configure(fg=_fgcolorlight)
+
+
+
 
         self.bt_skip = Button(top)
         self.bt_skip.place(relx=0.76, rely=0.55, height=40, width=60)
@@ -193,7 +211,7 @@ class New_Toplevel_1:
         self.bt_skip.configure(fg=_fgcolorlight)
 
         self.bt_start = Button(top)
-        self.bt_start.place(relx=0.76, rely=0.14, height=30, width=50)
+        self.bt_start.place(relx=0.76, rely=0.16, height=30, width=50)
         self.bt_start.configure(activebackground=_activebgcolordark)
         self.bt_start.configure(command=lambda: self.startDetection())
         #self.bt_fix.configure(background=_bgcolorlight)
@@ -259,11 +277,12 @@ class New_Toplevel_1:
         num = int(self.stepnum.get())
         if num<1:
             num = 1
-        self.showImagef.skip_pic(num)
+        numlight = int(self.exlight.get())
+        self.showImagef.skip_pic(num,numlight)
 
     def testshowpic(self):
         testShow = testImg.testShowImg(self.getoutpath.get(),nwidth,nheight) 
-        testShow.searchFile()
+        testShow.searchFile(self.txtnum.get())
         testShow.whileFile()
         del testShow
 

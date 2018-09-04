@@ -28,16 +28,36 @@ def to_rgb(img):
 def rgb2gray(rgb):
     return np.dot(rgb[...,:3], [0.299, 0.587, 0.144])
     
-def subListDir(filepath):
+def subListDir(filepath,num=100):
     path_list=[]
     files = os.listdir(filepath)
     files = sorted(files)
+    flag  = 0
+    count = 0
+    b = int(len(files)/num)
+    temp = 0
     for fi in files:
         fi_d = os.path.join(filepath,fi)
         if os.path.isdir(fi_d):
-            path_list += subListDir(fi_d)
+            path_list += subListDir(fi_d,num)
         else:
-            path_list.append(os.path.join(filepath,fi_d))
+            if len(files)<num:
+                if flag !=2 and ( os.path.splitext(fi)[1] == '.bmp' or os.path.splitext(fi)[1] == '.jpg'):
+                    flag =1 
+                    path_list.append(os.path.join(filepath,fi_d))
+                if flag !=1 and os.path.splitext(fi)[1] == '.bin':
+                    flag =2
+                    path_list.append(os.path.join(filepath,fi_d))
+            else:
+                if count == temp:
+                    temp +=b
+                    if flag !=2 and ( os.path.splitext(fi)[1] == '.bmp' or os.path.splitext(fi)[1] == '.jpg'):
+                        flag =1 
+                        path_list.append(os.path.join(filepath,fi_d))
+                    if flag !=1 and os.path.splitext(fi)[1] == '.bin':
+                        flag =2
+                        path_list.append(os.path.join(filepath,fi_d))
+                count+=1
     return path_list
 
 
@@ -77,6 +97,24 @@ def setoldLoc(num,locnum):
     f= open('./modleData/lastReadLoc.txt','w')
     f.write(str(0)+'_'+str(num)+'_'+str(locnum))
     f.close()
+
+    
+
+def xshow(filename, nx, nz):
+    data = np.fromfile(filename,np.uint8)
+    img = data.reshape(nz,nx)
+    '''
+    f = open(path, "rb")
+    pic=np.zeros((nz,nx),np.uint8)
+    for i in range(nz):
+        for j in range(nx):
+            data1 = f.read(1)
+            pic[i][j]=ord(data1)
+    f.close()
+    '''
+    return img
+
+
 class MtcnnDlib():
  
     predictor_path = "./modleData/shape_predictor_68_face_landmarks.dat"
@@ -92,6 +130,7 @@ class MtcnnDlib():
         self.method = method
         self.width = nwidth
         self.height = nheight
+        self.skipnum = 20
        
         '''
         if self.method==1:
@@ -129,7 +168,7 @@ class MtcnnDlib():
         self.personNum =len(self.imageDirPaths)
         MtcnnDlib.readNumloc,MtcnnDlib.readNumpic = getoldLoc()   #
         self.firstflag = True
-        self.minsize = 20 # minimum size of face
+        #self.minsize = 20 # minimum size of face
         self.threshold = [ 0.6, 0.7, 0.7 ]  # three steps's threshold
         self.factor = 0.709 # scale factor
         self.bb = np.zeros(4, dtype=np.int32)
@@ -148,7 +187,7 @@ class MtcnnDlib():
                 return 0,0
             self.firstflag = False
             imageFileDirPath = os.path.join(self.inputPath,self.imageDirPaths[MtcnnDlib.readNumloc])
-            self.imagePathList = subListDir(imageFileDirPath)
+            self.imagePathList = subListDir(imageFileDirPath,self.skipnum)
             self.pathLen = len(self.imagePathList)
             MtcnnDlib.bounding_boxes_filename = os.path.join(self.outPath, 'featureDot_%06d.txt' % MtcnnDlib.readNumloc)
             if(MtcnnDlib.text_file!=None):
@@ -165,7 +204,7 @@ class MtcnnDlib():
                 return 0,0
             MtcnnDlib.readNumpic= 0
             imageFileDirPath = os.path.join(self.inputPath,self.imageDirPaths[MtcnnDlib.readNumloc])
-            self.imagePathList = subListDir(imageFileDirPath)
+            self.imagePathList = subListDir(imageFileDirPath,self.skipnum)
             self.pathLen = len(self.imagePathList)
             MtcnnDlib.bounding_boxes_filename = os.path.join(self.outPath, 'featureDot_%06d.txt' % MtcnnDlib.readNumloc)
             if(MtcnnDlib.text_file!=None):
@@ -194,7 +233,14 @@ class MtcnnDlib():
                 errorMessage = '{}: {}'.format(image_path, e)
                 print(errorMessage)
             else:"""
-            img = cv2.imread(self.image_path,cv2.IMREAD_COLOR) #cv2.IMREAD_GRAYSCALE
+            if os.path.splitext(self.image_path)[1] =='.bin':  #temp 2018 08 02
+                img = xshow(self.image_path,480,640)
+                #cv2.imshow('test',img)
+                #cv2.waitKey(0)
+                #data = cv2.
+                #img = cv2.imread(self.image_path,cv2.IMREAD_COLOR) 
+            else:
+                img = cv2.imread(self.image_path,cv2.IMREAD_COLOR) #cv2.IMREAD_GRAYSCALE
             if img is None:
                 return None
             else:
