@@ -2,7 +2,7 @@
 https://github.com/kpzhang93/MTCNN_face_detection_alignment
 """
 # MIT License
-# 
+#  
 # Copyright (c) 2016 David Sandberg
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
