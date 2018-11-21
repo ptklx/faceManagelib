@@ -118,7 +118,7 @@ class New_Toplevel_1:
         self.Label4.configure(background=_lightwindowbackground)      
         
         self.stepnum = Entry(top)
-        self.stepnum.place(relx=0.86, rely=0.35, height=30, width=50)
+        self.stepnum.place(relx=0.89, rely=0.35, height=30, width=50)
         self.stepnum.configure(background=_bgcolorlight)
         self.stepnum.configure(font="TkFixedFont")
        # self.stepnum.configure(width=100)
@@ -127,13 +127,13 @@ class New_Toplevel_1:
         
         self.threadlight = 20
         self.Label5 = Label(top)
-        self.Label5.place(relx=0.76, rely=0.40, height=20, width=60)
-        self.Label5.configure(text='threadlight:')
+        self.Label5.place(relx=0.76, rely=0.40, height=20, width=70)
+        self.Label5.configure(text='threalight:')
         self.Label5.configure(fg=_fgcolorlight)
         self.Label5.configure(background=_lightwindowbackground)
 
         self.exlight = Entry(top)
-        self.exlight.place(relx=0.86, rely=0.40, height=30, width=50)
+        self.exlight.place(relx=0.89 ,rely=0.40, height=30, width=50)
         self.exlight.configure(background=_bgcolorlight)
         self.exlight.configure(font="TkFixedFont")
        # self.exlight.configure(width=100)
@@ -153,7 +153,7 @@ class New_Toplevel_1:
         self.Canvas1.bind('<Configure>',lambda x: Image_support.Plot(1,self.Canvas1, self.file_path,3) )
 
         self.next = Button(top)
-        self.next.place(relx=0.76, rely=0.8, height=50, width=70)
+        self.next.place(relx=0.76, rely=0.70 , height=50, width=70)
         self.next.configure(activebackground=_activebgcolordark)
         self.next.configure(command=lambda: self.detectDot(1))
         self.next.configure(cursor="left_ptr")
@@ -162,8 +162,37 @@ class New_Toplevel_1:
         self.next.configure(background=_bgcolorlight)
         self.next.configure(fg=_fgcolorlight)
         
+        self.maxautonum = 1000
+        self.Label7 = Label(top)
+        self.Label7.place(relx=0.76, rely=0.81, height=20, width=70)
+        self.Label7.configure(text='autonum:')
+        self.Label7.configure(fg=_fgcolorlight)
+        self.Label7.configure(background=_lightwindowbackground)
+
+        self.autonum = Entry(top)
+        self.autonum.place(relx=0.89 , rely=0.81, height=30, width=50)
+        self.autonum.configure(background=_bgcolorlight)
+        self.autonum.configure(font="TkFixedFont")
+       # self.autonum.configure(width=100)
+        self.autonum.insert(0, self.maxautonum)
+        self.autonum.configure(fg=_fgcolorlight)
+        
+        
+        self.auto = Button(top)
+        self.auto.place(relx=0.76, rely=0.88, height=50, width=70)
+        self.auto.configure(activebackground=_activebgcolordark)
+        self.auto.configure(command=lambda: self.autodetectDot(1))
+        self.auto.configure(cursor="left_ptr")
+        self.auto.configure(text='auto')
+        #self.auto.configure(width=47)
+        self.auto.configure(background=_bgcolorlight)
+        self.auto.configure(fg=_fgcolorlight)
+        
+        
+        
+        
         self.bt_fix = Button(top)
-        self.bt_fix.place(relx=0.76, rely=0.65, height=40, width=60)
+        self.bt_fix.place(relx=0.76, rely=0.60, height=40, width=60)
         self.bt_fix.configure(activebackground=_activebgcolordark)
         self.bt_fix.configure(command=lambda: self.detectDot(2))
         #self.bt_fix.configure(background=_bgcolorlight)
@@ -201,7 +230,7 @@ class New_Toplevel_1:
 
 
         self.bt_skip = Button(top)
-        self.bt_skip.place(relx=0.76, rely=0.55, height=40, width=60)
+        self.bt_skip.place(relx=0.76, rely=0.50, height=40, width=60)
         self.bt_skip.configure(activebackground=_activebgcolordark)
         self.bt_skip.configure(command=lambda: self.skipPic())
         #self.bt_skip.configure(background=_bgcolorlight)
@@ -270,7 +299,26 @@ class New_Toplevel_1:
             num = int(self.stepnum.get())
             if self.methodNum != 4:
                 self.showImagef.fix_image()
-            
+                
+    def autodetectDot(self,method):
+        autonummax = int(self.autonum.get())
+        for i in range(autonummax):
+            if self.showImagef ==None:
+                return
+            self.flagfix = 1
+            self.methodNum = int(self.getmethod.get())
+            num = int(self.stepnum.get())
+            if num<1:
+                num = 1
+            if self.methodNum ==4:
+                numlight = int(self.exlight.get())
+                self.flagfix = 1
+                self.showImagef.next_image(num,numlight)
+            else:
+                self.showImagef.next_image(num,255)
+            print("detct num %d  image"%i)
+        self.closetxt()
+        
     def skipPic(self):
         if self.showImagef ==None:
             return

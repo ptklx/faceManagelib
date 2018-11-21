@@ -44,12 +44,14 @@ class testShowImg():
         cv2.destroyAllWindows()
 
     def getOnePersonbb(self,inpath):
+        print(inpath)
         f=open(inpath,'r')
         #dirpaht = os.path.dirname(inpaht)
         [dirname,filename] = os.path.split(inpath)
         dirname =  dirname +'\\test'  #'V:\\NIR_ALL_480x572labeltxt' #
         if not os.path.exists(dirname):                   #判断是否存在文件夹如果不存在则创建为文件夹  
             os.makedirs(dirname) 
+        print(dirname+'\\'+filename)
         f1 = open(dirname+'\\'+filename,'w')  
         n = 0
         for index, line in enumerate(f.readlines()):
@@ -81,8 +83,8 @@ class testShowImg():
             flag =True
             while(1):
                 Time = (cv2.getTickCount() - time )/(cv2.getTickFrequency())
-                if(Time>20):
-                    break 
+                #if(Time>20):
+                    #break 
                 k = cv2.waitKey(1) & 0xFF
                 if k == ord('q') or k ==27:   #Esc
                     f1.close()
@@ -121,7 +123,9 @@ class testShowImg():
         return img
     def showimg(self,inpathlist):
         #inpathlist= 'V'+ inpathlist[1:]
-        inpathlist = self.path[0:1]+inpathlist[1:]
+        #inpathlist = self.path[0:1]+inpathlist[1:]
+       
+        print(inpathlist)
         if os.path.splitext(inpathlist)[1] =='.bin':  #temp 2018 08 02
                 img = xyshow(inpathlist,480,640)
         else:
